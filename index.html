@@ -27,7 +27,7 @@
       .valentine-card {
         background: white;
         width: 520px;
-        min-height: 360px;
+        min-height: 380px;
         padding: 60px 50px;
         border-radius: 36px;
         text-align: center;
@@ -91,6 +91,13 @@
         font-size: 14px;
         color: #999;
       }
+
+      .signature {
+        margin-top: 28px;
+        font-size: 14px;
+        color: #bbb;
+        font-style: italic;
+      }
     </style>
   </head>
 
@@ -98,18 +105,17 @@
     <div id="valentine"></div>
 
     <script>
-      function getName() {
+      function getParam(key) {
         const params = new URLSearchParams(window.location.search);
-        const raw = params.get("name");
-        if (!raw) return null;
-
-        // Capitalize nicely
-        return raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase();
+        const value = params.get(key);
+        if (!value) return null;
+        return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
       }
 
       function ValentineComponent(root) {
-        const name = getName();
-        const who = name ? name : "you";
+        const name = getParam("name");
+        const from = getParam("from");
+        const who = name || "you";
 
         const state = {
           escaped: false,
@@ -125,10 +131,12 @@
 
         root.innerHTML = `
           <div class="valentine-card" id="card">
-            <div class="emoji">🐣💗</div>
+            <div class="emoji">🥹💗</div>
+
             <h1 class="main-question">
               ${name ? `${name}, will you be my Valentine?` : "Will you be my Valentine?"}
             </h1>
+
             <p class="tease" id="tease"></p>
 
             <div class="buttons">
@@ -137,6 +145,12 @@
             </div>
 
             <div class="note">*No seems a bit shy 😈*</div>
+
+            ${
+              from
+                ? `<div class="signature">— from ${from}</div>`
+                : ""
+            }
           </div>
         `;
 
@@ -208,8 +222,17 @@
           setTimeout(() => {
             card.innerHTML = `
               <div class="emoji">💘🥹💘</div>
-              <h1>${name ? `You just made my day, ${name}.` : "You just made my day."}</h1>
-              <p style="color:#666">Happy Valentine’s 💕</p>
+              <h1>
+                ${
+                  name
+                    ? `You just made my day, ${name}.`
+                    : "You just made my day."
+                }
+              </h1>
+              <p style="color:#666">
+                Happy Valentine’s 💕
+                ${from ? `<br><br>— ${from}` : ""}
+              </p>
             `;
           }, 200);
         });
